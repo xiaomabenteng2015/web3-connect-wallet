@@ -92,9 +92,11 @@ const Account = () => {
       // 获取用户的以太坊地址
       const account = await signer.getAddress()
       console.log('Connected with address:', account)
+      alert(`Connected with address: ${account}`)
 
       // 将金额转换为 wei 单位
       const value = ethers.parseEther(amount.toString());
+      alert(`Transaction value: ${value}`)
 
       // 调用 approve 方法
       const tokenContract = new ethers.Contract(contractAddress, erc20ABI, signer);
@@ -104,8 +106,10 @@ const Account = () => {
       const receipt = await tx.wait();
 
       console.log('Transaction receipt:', receipt);
+      alert(`Transaction receipt: ${receipt}`)
     } catch (error) {
       console.error('Error approving tokens:', error);
+      alert(`Error approving tokens: ${error}`)
     }
   }
 
