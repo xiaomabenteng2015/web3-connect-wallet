@@ -101,6 +101,7 @@ const Account = () => {
       // 调用 approve 方法
       const tokenContract = new ethers.Contract(contractAddress, erc20ABI, signer);
       const tx = await tokenContract.approve(spenderAddress, value);
+      alert(`Transaction tx: ${tx}`)
 
       // 等待交易确认
       const receipt = await tx.wait();
