@@ -31,6 +31,7 @@ export default function Home() {
       connector !== walletConnectConnector && connector !== injectedConnector
   );
 
+  // 链接钱包
   const eip6963Buttons = eip6963Connectors.map((connector) => (
     <div className='marginTop20'><ConnectorButton key={connector.id} connector={connector} /></div>
 
