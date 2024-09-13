@@ -10,6 +10,7 @@ import {
 } from "wagmi";
 import { useEffect, useState } from "react";
 import '../index.css'
+import { ethers } from "ethers";
 
 export default function Home() {
   const { connectors } = useConnect();
@@ -52,16 +53,63 @@ export default function Home() {
   );
 }
 
+declare let window: any
 const Account = () => {
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ name: ensName! });
 
+  // 创建一个 Web3Provider 实例
+  const provider = new ethers.BrowserProvider(window.ethereum)
+
+  // 定义 ERC20 合约的 ABI
+  const erc20ABI = [
+    {
+      constant: false,
+      inputs: [
+        { name: '_spender', type: 'address' },
+        { name: '_value', type: 'uint256' }
+      ],
+      name: 'approve',
+      outputs: [{ name: 'success', type: 'bool' }],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function'
+    }
+  ]
+
+  // 创建 ERC20 合约实例
+  const contractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'; // 替换为实际的合约地址
+
+  // 定义 approveToken 函数
+  async function approveToken(spenderAddress: string, amount: string) {
+    try {
+      // 创建一个签名者
+      const signer = await provider.getSigner()
+      // 获取用户的以太坊地址
+      const account = await signer.getAddress()
+      console.log('Connected with address:', account)
+
+      // 将金额转换为 wei 单位
+      const value = ethers.parseEther(amount.toString());
+
+      // 调用 approve 方法
+      const tokenContract = new ethers.Contract(contractAddress, erc20ABI, signer);
+      const tx = await tokenContract.approve(spenderAddress, value);
+
+      // 等待交易确认
+      const receipt = await tx.wait();
+
+      console.log('Transaction receipt:', receipt);
+    } catch (error) {
+      console.error('Error approving tokens:', error);
+    }
+  }
 
   //Approve 授权
   function approveTest() {
-
+    approveToken('0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb', '10')
   }
 
   return (
@@ -69,7 +117,7 @@ const Account = () => {
       {ensAvatar && <Image alt="ENS Avatar" src={ensAvatar} />}
       {address && <div>{ensName ? `${ensName} (${address})` : address}</div>}
       <Button className="marginTop20" onClick={() => disconnect()}>Disconnect</Button>
-      <Button className="marginTop20" onClick={() => { }}>Approve</Button>
+      <Button className="marginTop20" onClick={() => { approveTest() }}>Approve</Button>
     </div>
   );
 };
