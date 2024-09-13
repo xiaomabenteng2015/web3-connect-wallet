@@ -110,7 +110,7 @@ const Account = () => {
       // alert(`Transaction receipt: ${receipt}`)
     } catch (error) {
       console.error('Error approving tokens:', error);
-      alert(`Error approving tokens: ${error}`)
+      // alert(`Error approving tokens: ${error}`)
     }
   }
 
