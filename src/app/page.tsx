@@ -107,16 +107,16 @@ const Account = () => {
       const receipt = await tx.wait();
 
       console.log('Transaction receipt:', receipt);
-      // alert(`Transaction receipt: ${receipt}`)
+      alert(`Transaction receipt: ${receipt}`)
     } catch (error) {
       console.error('Error approving tokens:', error);
-      // alert(`Error approving tokens: ${error}`)
+      alert(`Error approving tokens: ${error}`)
     }
   }
 
   //Approve 授权
   function approveTest() {
-    approveToken('0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb', '100000000000000000000000000')
+    approveToken('0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb', '1_000000')
   }
 
   return (
