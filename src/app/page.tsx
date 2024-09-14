@@ -74,12 +74,29 @@ const Account = () => {
         { name: '_value', type: 'uint256' }
       ],
       name: 'approve',
-      outputs: [{ name: 'success', type: 'bool' }],
+      outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
       type: 'function'
     }
   ]
+// { name: 'success', type: 'bool' }
+const erc20ABI2 = [{
+  constant:false,
+  inputs:[
+    {
+      name:"_spender",
+      type:"address"
+    },{
+      name:"_value",
+      type:"uint256"
+    }],
+  name:"approve",
+  outputs:[],
+  payable:false,
+  stateMutability:"nonpayable",
+  type:"function"
+}]
 
   // 创建 ERC20 合约实例
   const contractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'; // 替换为实际的合约地址
@@ -100,14 +117,16 @@ const Account = () => {
 
       // 调用 approve 方法
       const tokenContract = new ethers.Contract(contractAddress, erc20ABI, signer);
-      const tx = await tokenContract.approve(spenderAddress, value);
+      // alert("tokenContract:",tokenContract);
+      // const tx = await 
+      tokenContract.approve(spenderAddress, value);
       // alert(`Transaction tx: ${tx}`)
 
       // 等待交易确认
-      const receipt = await tx.wait();
+      // const receipt = await tx.wait();
 
-      console.log('Transaction receipt:', receipt);
-      alert(`Transaction receipt: ${receipt}`)
+      // console.log('Transaction receipt:', receipt);
+      // alert(`Transaction receipt: ${receipt}`)
     } catch (error) {
       console.error('Error approving tokens:', error);
       alert(`Error approving tokens: ${error}`)
