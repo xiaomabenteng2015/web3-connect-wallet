@@ -98,14 +98,20 @@ export const USDTAbi = [
     stateMutability: 'view',
   },
   {
-    type: 'function',
-    inputs: [
-      { name: '_spender', internalType: 'address', type: 'address' },
-      { name: '_value', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'approve',
-    outputs: [{ name: 'success', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'nonpayable',
+    constant:false,
+    inputs:[
+      {
+        name:"_spender",
+        type:"address"
+      },{
+        name:"_value",
+        type:"uint256"
+      }],
+    name:"approve",
+    outputs:[],
+    payable:false,
+    stateMutability:"nonpayable",
+    type:"function"
   },
   {
     type: 'function',
