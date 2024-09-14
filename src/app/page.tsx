@@ -116,7 +116,7 @@ const Account = () => {
 
   //Approve 授权
   function approveTest() {
-    approveToken('0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb', '1_000000')
+    approveToken('0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb', '1000000')
   }
 
   return (
