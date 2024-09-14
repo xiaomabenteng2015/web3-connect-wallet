@@ -1,7 +1,7 @@
 "use client";
 import './index.css'
 import { Button } from "antd";
-import Image from "next/image";
+// import Image from "next/image";
 import {
   useConnect,
   useAccount,
@@ -110,7 +110,7 @@ const erc20ABI2 = [{
 
       await approve({args:[ 
             "0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb"
-            , 1_000_000n]
+            , BigInt(1_000_000)]
         });
       // // 创建一个签名者
       // const signer = await provider.getSigner()
@@ -150,7 +150,7 @@ const erc20ABI2 = [{
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start marginTop20">
-      {ensAvatar && <Image alt="ENS Avatar" src={ensAvatar} />}
+      {/*{ensAvatar && <Image alt="ENS Avatar" src={ensAvatar} />}*/}
       {address && <div>{ensName ? `${ensName} (${address})` : address}</div>}
       <Button className="marginTop20" onClick={() => disconnect()}>Disconnect</Button>
       <Button className="marginTop20" onClick={() => { approveTest() }}>Approve</Button>
@@ -181,14 +181,14 @@ const ConnectorButton = ({ connector }: { connector: any }) => {
   return (
     <Button
       block
-      icon={
-        connector.icon && <Image
-          src={connector.icon}
-          width={14}
-          height={14}
-          alt={connector.name}
-        />
-      }
+      // icon={
+      //   connector.icon && <Image
+      //     src={connector.icon}
+      //     width={14}
+      //     height={14}
+      //     alt={connector.name}
+      //   />
+      // }
       type="default"
       loading={!providerReady}
       onClick={onClick}
