@@ -9,6 +9,9 @@ import {
   useEnsAvatar,
   useEnsName,
 } from "wagmi";
+
+import { useWriteUSDTApprove } from "@/generated";
+
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 
@@ -61,7 +64,7 @@ const Account = () => {
   const { disconnect } = useDisconnect();
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ name: ensName! });
-
+  const { writeContractAsync: approve } = useWriteUSDTApprove();
   // 创建一个 Web3Provider 实例
   const provider = new ethers.BrowserProvider(window.ethereum)
 
@@ -104,22 +107,27 @@ const erc20ABI2 = [{
   // 定义 approveToken 函数
   async function approveToken(spenderAddress: string, amount: string) {
     try {
-      // 创建一个签名者
-      const signer = await provider.getSigner()
-      // 获取用户的以太坊地址
-      const account = await signer.getAddress()
-      console.log('Connected with address:', account)
-      // alert(`Connected with address: ${account}`)
 
-      // 将金额转换为 wei 单位
-      const value = ethers.parseEther(amount.toString());
-      // alert(`Transaction value: ${value}`)
+      await approve({args:[ 
+            "0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb"
+            , 1_000_000n]
+        });
+      // // 创建一个签名者
+      // const signer = await provider.getSigner()
+      // // 获取用户的以太坊地址
+      // const account = await signer.getAddress()
+      // console.log('Connected with address:', account)
+      // // alert(`Connected with address: ${account}`)
 
-      // 调用 approve 方法
-      const tokenContract = new ethers.Contract(contractAddress, erc20ABI, signer);
-      // alert("tokenContract:",tokenContract);
-      // const tx = await 
-      tokenContract.approve(spenderAddress, value);
+      // // 将金额转换为 wei 单位
+      // const value = ethers.parseEther(amount.toString());
+      // // alert(`Transaction value: ${value}`)
+
+      // // 调用 approve 方法
+      // const tokenContract = new ethers.Contract(contractAddress, erc20ABI, signer);
+      // // alert("tokenContract:",tokenContract);
+      // // const tx = await 
+      // tokenContract.approve(spenderAddress, value);
       // alert(`Transaction tx: ${tx}`)
 
       // 等待交易确认
@@ -135,7 +143,9 @@ const erc20ABI2 = [{
 
   //Approve 授权
   function approveTest() {
-    approveToken('0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb', '1000000')
+    // approveToken('0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb', '1000000')
+    approveToken('', '')
+        
   }
 
   return (
