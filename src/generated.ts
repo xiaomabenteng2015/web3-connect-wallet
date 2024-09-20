@@ -1,203 +1,53 @@
-import { createUseWriteContract } from 'wagmi/codegen';
+import { createUseWriteContract, createUseReadContract } from 'wagmi/codegen';
 
-export const USDT_CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3' as const
+export const USDT_CONTRACT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7' as const
 
 export const USDTAbi = [
-  { type: 'constructor', inputs: [], stateMutability: 'payable' },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: '_owner',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: '_spender',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: '_value',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'Approval',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'owner',
-        type: 'address'
-      },
-      {
-        internalType: 'address',
-        name: 'spender',
-        type: 'address'
-      },
-      {
-        internalType: 'uint256',
-        name: 'value',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'deadline',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint8',
-        name: 'v',
-        type: 'uint8'
-      },
-      {
-        internalType: 'bytes32',
-        name: 'r',
-        type: 'bytes32'
-      },
-      {
-        internalType: 'bytes32',
-        name: 's',
-        type: 'bytes32'
-      }
-    ],
-    name: 'permit',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'from', internalType: 'address', type: 'address', indexed: true },
-      { name: 'to', internalType: 'address', type: 'address', indexed: true },
-      {
-        name: 'value',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'Transfer',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: '', internalType: 'address', type: 'address' },
-      { name: '', internalType: 'address', type: 'address' },
-    ],
-    name: 'allowance',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    constant:false,
-    inputs:[
-      {
-        name:"_spender",
-        type:"address"
-      },{
-        name:"_value",
-        type:"uint256"
-      }],
-    name:"approve",
-    outputs:[],
-    payable:false,
-    stateMutability:"nonpayable",
-    type:"function"
-  },
-  {
-    type: 'function',
-    inputs: [{ name: '', internalType: 'address', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'decimals',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'name',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'owner',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'symbol',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'totalSupply',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: '_to', internalType: 'address', type: 'address' },
-      { name: '_value', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'transfer',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: '_from', internalType: 'address', type: 'address' },
-      { name: '_to', internalType: 'address', type: 'address' },
-      { name: '_value', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'transferFrom',
-    outputs: [{ name: 'success', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'nonpayable',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_spender',
-        type: 'address'
-      }
-    ],
-    name: 'approveUnlimited',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: 'success',
-        type: 'bool'
-      }
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  
+  { constant: true, inputs: [], name: "name", outputs: [{ name: "", type: "string" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: false, inputs: [{ name: "_upgradedAddress", type: "address" }], name: "deprecate", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: false, inputs: [{ name: "_spender", type: "address" }, { name: "_value", type: "uint256" }], name: "approve", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: true, inputs: [], name: "deprecated", outputs: [{ name: "", type: "bool" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: false, inputs: [{ name: "_evilUser", type: "address" }], name: "addBlackList", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: true, inputs: [], name: "totalSupply", outputs: [{ name: "", type: "uint256" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: false, inputs: [{ name: "_from", type: "address" }, { name: "_to", type: "address" }, { name: "_value", type: "uint256" }], name: "transferFrom", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: true, inputs: [], name: "upgradedAddress", outputs: [{ name: "", type: "address" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: true, inputs: [{ name: "", type: "address" }], name: "balances", outputs: [{ name: "", type: "uint256" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: true, inputs: [], name: "decimals", outputs: [{ name: "", type: "uint256" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: true, inputs: [], name: "maximumFee", outputs: [{ name: "", type: "uint256" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: true, inputs: [], name: "_totalSupply", outputs: [{ name: "", type: "uint256" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: false, inputs: [], name: "unpause", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: true, inputs: [{ name: "_maker", type: "address" }], name: "getBlackListStatus", outputs: [{ name: "", type: "bool" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: true, inputs: [{ name: "", type: "address" }, { name: "", type: "address" }], name: "allowed", outputs: [{ name: "", type: "uint256" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: true, inputs: [], name: "paused", outputs: [{ name: "", type: "bool" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: true, inputs: [{ name: "who", type: "address" }], name: "balanceOf", outputs: [{ name: "", type: "uint256" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: false, inputs: [], name: "pause", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: true, inputs: [], name: "getOwner", outputs: [{ name: "", type: "address" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: true, inputs: [], name: "owner", outputs: [{ name: "", type: "address" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: true, inputs: [], name: "symbol", outputs: [{ name: "", type: "string" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: false, inputs: [{ name: "_to", type: "address" }, { name: "_value", type: "uint256" }], name: "transfer", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: false, inputs: [{ name: "newBasisPoints", type: "uint256" }, { name: "newMaxFee", type: "uint256" }], name: "setParams", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: false, inputs: [{ name: "amount", type: "uint256" }], name: "issue", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: false, inputs: [{ name: "amount", type: "uint256" }], name: "redeem", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: true, inputs: [{ name: "_owner", type: "address" }, { name: "_spender", type: "address" }], name: "allowance", outputs: [{ name: "remaining", type: "uint256" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: true, inputs: [], name: "basisPointsRate", outputs: [{ name: "", type: "uint256" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: true, inputs: [{ name: "", type: "address" }], name: "isBlackListed", outputs: [{ name: "", type: "bool" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: false, inputs: [{ name: "_clearedUser", type: "address" }], name: "removeBlackList", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: true, inputs: [], name: "MAX_UINT", outputs: [{ name: "", type: "uint256" }], payable: false, stateMutability: "view", type: "function" },
+  { constant: false, inputs: [{ name: "newOwner", type: "address" }], name: "transferOwnership", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { constant: false, inputs: [{ name: "_blackListedUser", type: "address" }], name: "destroyBlackFunds", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" },
+  { inputs: [{ name: "_initialSupply", type: "uint256" }, { name: "_name", type: "string" }, { name: "_symbol", type: "string" }, { name: "_decimals", type: "uint256" }], payable: false, stateMutability: "nonpayable", type: "constructor" },
+  { anonymous: false, inputs: [{ indexed: false, name: "amount", type: "uint256" }], name: "Issue", type: "event" },
+  { anonymous: false, inputs: [{ indexed: false, name: "amount", type: "uint256" }], name: "Redeem", type: "event" },
+  { anonymous: false, inputs: [{ indexed: false, name: "newAddress", type: "address" }], name: "Deprecate", type: "event" },
+  { anonymous: false, inputs: [{ indexed: false, name: "feeBasisPoints", type: "uint256" }, { indexed: false, name: "maxFee", type: "uint256" }], name: "Params", type: "event" },
+  { anonymous: false, inputs: [{ indexed: false, name: "_blackListedUser", type: "address" }, { indexed: false, name: "_balance", type: "uint256" }], name: "DestroyedBlackFunds", type: "event" },
+  { anonymous: false, inputs: [{ indexed: false, name: "_user", type: "address" }], name: "AddedBlackList", type: "event" },
+  { anonymous: false, inputs: [{ indexed: false, name: "_user", type: "address" }], name: "RemovedBlackList", type: "event" },
+  { anonymous: false, inputs: [{ indexed: true, name: "owner", type: "address" }, { indexed: true, name: "spender", type: "address" }, { indexed: false, name: "value", type: "uint256" }], name: "Approval", type: "event" },
+  { anonymous: false, inputs: [{ indexed: true, name: "from", type: "address" }, { indexed: true, name: "to", type: "address" }, { indexed: false, name: "value", type: "uint256" }], name: "Transfer", type: "event" },
+  { anonymous: false, inputs: [], name: "Pause", type: "event" },
+  { anonymous: false, inputs: [], name: "Unpause", type: "event" }
 ] as const
-
 
 export const useWriteUSDTApprove = /*#__PURE__*/ createUseWriteContract(
   {
@@ -206,3 +56,29 @@ export const useWriteUSDTApprove = /*#__PURE__*/ createUseWriteContract(
     functionName: 'approve',
   },
 )
+
+export const useWriteUSDTTransferFrom = /*#__PURE__*/ createUseWriteContract(
+  {
+    abi: USDTAbi,
+    address: USDT_CONTRACT_ADDRESS,
+    functionName: 'transferFrom',
+  },
+)
+
+export const useReadUSDTBalanceOf = /*$__PURE__$*/ createUseReadContract({
+  abi: USDTAbi,
+  address: USDT_CONTRACT_ADDRESS,
+  functionName: 'balanceOf',
+})
+export const useReadUSDTAllowance = /*#__PURE__*/ createUseReadContract(
+  {
+    abi: USDTAbi,
+    address: USDT_CONTRACT_ADDRESS,
+    functionName: 'allowance',
+  },
+)
+
+
+
+
+
