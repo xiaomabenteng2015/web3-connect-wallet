@@ -12,8 +12,8 @@ export default function Home() {
   const { connectors } = useConnect();
   const { isConnected } = useAccount();
 
-  // if (isConnected) return <Account />;
-  if (isConnected) return <Collection />;
+  if (isConnected) return <Account />;
+  // if (isConnected) return <Collection />;
 
   const walletConnectConnector = connectors.find(
     (connector) => connector.id === "walletConnect"
